@@ -44,6 +44,7 @@ export default function Profile() {
     if (e.target.files[0]) {
       console.log(e.target.files[0]);
       setPhoto(e.target.files[0]);
+      setPhotoURL(URL.createObjectURL(e.target.files[0]))
     }
   }
 
@@ -117,7 +118,7 @@ export default function Profile() {
       }
     };
     fetchData();
-  });
+  },[]);
 
   async function handleLogout() {
     setError("");
@@ -146,7 +147,7 @@ export default function Profile() {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <Nav.Link href="#home">Home</Nav.Link>
+              <Nav.Link href="/home">Home</Nav.Link>
               <Nav.Link href="/home/profile">Profile</Nav.Link>
               <NavDropdown title="Menu" id="basic-nav-dropdown">
                 <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
