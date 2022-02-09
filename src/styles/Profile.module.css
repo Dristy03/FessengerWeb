@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
+
+* {
+	box-sizing: border-box;
+}
+
+
+h3 {
+	margin: 10px 0;
+}
+
+h6 {
+	margin: 5px 0;
+	text-transform: uppercase;
+}
+
+p {
+	font-size: 14px;
+	line-height: 21px;
+}
+
+.cardContainer {
+	background-color: #6FB3F8;
+	border-radius: 5px;
+	box-shadow: 0px 10px 20px -10px rgba(0,0,0,0.75);
+	color: #ffffff;
+	padding: 30px;
+	position: relative;
+	width: 350px;
+	max-width: 100%;
+	text-align: center;
+   
+}
+
+
+ .imground {
+	border: 1px solid #ffffff;
+	border-radius: 50%;
+	padding: 7px;
+    width: 100%;
+    height: auto;
+}
+
+
+
+
+
