@@ -1,13 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
   Form,
-  NavDropdown,
-  Nav,
-  Navbar,
-  Container,
-  Button,
   Card,
-  Alert,
 } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
@@ -15,6 +9,7 @@ import styles from "../styles/Profile.module.css";
 import { db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import NavigationBar from "./NavigationBar.js";
 
 export default function Profile() {
   const { updatePassword, updateName, updateBio, upload } = useAuth();
@@ -91,7 +86,7 @@ export default function Profile() {
     const fetchData = async () => {
     
       const storage = getStorage();
-      const imageRef = ref(storage, "images/" + currentUser.email + ".png");
+      const imageRef = ref(storage, "images/" + currentUser.email);
 
       getDownloadURL(imageRef)
         .then((url) => {
@@ -120,52 +115,10 @@ export default function Profile() {
     fetchData();
   },[]);
 
-  async function handleLogout() {
-    setError("");
-
-    try {
-      await logout();
-      navigate("/login");
-    } catch {
-      setError("Failed to log out");
-    }
-  }
+ 
   return (
     <>
-      <Navbar expand="lg">
-        <Container>
-          <Navbar.Brand href="#home">
-            <img
-              src="/Icon.png"
-              width="30"
-              height="30"
-              className="d-inline-block align-top"
-              alt="React Bootstrap logo"
-            />
-            Fessenger
-          </Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
-              <Nav.Link href="/home">Home</Nav.Link>
-              <Nav.Link href="/home/profile">Profile</Nav.Link>
-              <NavDropdown title="Menu" id="basic-nav-dropdown">
-                <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.2">
-                  Another action
-                </NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.3">
-                  Something
-                </NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item variant="link" onClick={handleLogout}>
-                  Logout
-                </NavDropdown.Item>
-              </NavDropdown>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
+     <NavigationBar/>
 
       <div className="container">
         <div className="row mt-5">

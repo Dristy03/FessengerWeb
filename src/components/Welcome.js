@@ -10,7 +10,7 @@ export default function Welcome() {
       <div className={styles.bg}>
         <Nav className="navbar navbar-light ">
           <Link
-            className="ms-auto me-3 btn btn-primary text-white shadow"
+            className="ms-auto me-3 btn text-white shadow"
             to="/login"
             style={{backgroundColor: "#6FB3F8"}}
           >

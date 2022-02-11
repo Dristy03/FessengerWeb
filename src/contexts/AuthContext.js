@@ -16,7 +16,7 @@ export function AuthProvider({ children }) {
   function signup(email, password) {
     setDoc(doc(db, "Users", email), {
       Email: email,
-      MailCounter: 100,
+      MailCounter: 0,
       Name: "",
       Password: password,
       Bio: "",
@@ -64,7 +64,7 @@ export function AuthProvider({ children }) {
   }
 
   async function upload(file, currentUser, setLoading) {
-    const fileRef = ref(storage, 'images/' + currentUser.email + '.png');
+    const fileRef = ref(storage, 'images/' + currentUser.email );
   
     setLoading(true);
     
