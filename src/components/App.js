@@ -7,8 +7,11 @@ import Home from "./Home";
 import Login from "./Login";
 import Welcome from "./Welcome";
 import Profile from "./Profile"
+import History from "./History";
+import ContactUs from "./ContactUs";
 import PrivateRoute from "./PrivateRoute";
 import ForgotPassword from "./ForgotPassword";
+
 
 
 function App() {
@@ -19,7 +22,9 @@ function App() {
             <Routes>
               <Route path="/home" element={<PrivateRoute />}>
                 <Route path="/home" element={<Home />} />
-                <Route path="/home/profile" element={<Profile />} />
+                {/* <Route path="/home/profile" element={<Profile />} /> */}
+                <Route path="/home/history" element={<History />} />
+                <Route path="/home/contact-us" element={<ContactUs />} />
               </Route>
               <Route path="/" element={<Welcome />} />
               <Route path="/signup" element={<Signup />} />

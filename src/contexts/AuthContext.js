@@ -16,10 +16,9 @@ export function AuthProvider({ children }) {
   function signup(email, password) {
     setDoc(doc(db, "Users", email), {
       Email: email,
-      MailCounter: 0,
-      Name: "",
+      MailCounter: 1000,
       Password: password,
-      Bio: "",
+     
     });
     return auth.createUserWithEmailAndPassword(email, password);
   }

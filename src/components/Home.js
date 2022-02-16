@@ -18,15 +18,16 @@ export default function Home() {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
+  const { format } = require("date-fns");
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
- // const [counter, setCounterValue] = useState(0);
+  // const [counter, setCounterValue] = useState(0);
   const [title, setTitleValue] = useState("");
   const [message, setMessageValue] = useState("");
   const [time, setTimeValue] = useState("");
   const [date, setDateValue] = useState("");
-  const { currentUser} = useAuth();
+  const { currentUser } = useAuth();
   const navigate = useNavigate();
 
   const titleRef = useRef();
@@ -34,17 +35,76 @@ export default function Home() {
   const dateRef = useRef();
   const timeRef = useRef();
 
+  const disablePastDate = () => {
+    const today = new Date();
+    const dd = String(today.getDate() + 1).padStart(2, "0");
+    const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+    const yyyy = today.getFullYear();
+    return yyyy + "-" + mm + "-" + dd;
+  };
+  const getCurrentDate = ()=> {
+
+    let newDate = new Date()
+    let Tdate = newDate.getDate();
+    let Tmonth = newDate.getMonth() + 1;
+    let Tyear = newDate.getFullYear();
+    
+    return `${Tdate}.${Tmonth<10?`0${Tmonth}`:`${Tmonth}`}.${Tyear}`
+    }
 
   async function saveData(counter) {
-    console.log(counter)
-    await setDoc(doc(db, "Mails", currentUser.email, "Details", counter.toString()), {
-      Title: titleRef.current.value,
-      Message: messageRef.current.value,
-      Date: dateRef.current.value,
-      Time: timeRef.current.value,
-      Priority: counter,
+    console.log(counter);
+  
+    let newDate = new Date()
+    let Tdate = newDate.getDate();
+    let Tmonth = newDate.getMonth() + 1;
+    let Tyear = newDate.getFullYear();
+
+    const date = new Date(dateRef.current.value);
+    const today = format(date, "EEEE, MMM dd, yyyy");
+    const year = format(date, "yyyy");
+    const month = format(date, "MM");
+    const day = format(date, "dd");
+
+    const title = titleRef.current.value;
+    const message = messageRef.current.value;
+
+    console.log(today);
+    await setDoc(
+      doc(db, "Mails", currentUser.email, "Details", counter.toString()),
+      {
+        Title: title,
+        Message: message,
+        Date: today,
+        Priority: `${Tyear}${Tmonth<10?`0${Tmonth}`:`${Tmonth}`}${Tdate}`,
+        Email: currentUser.email,
+        CurrentDate: `${Tdate}.${Tmonth<10?`0${Tmonth}`:`${Tmonth}`}.${Tyear}`
+      }
+    );
+
+    await setDoc(doc(db, "MailDatabase", year, month, day), {
+      SentAllMails: false,
     });
-    updateCounter(counter)
+
+    await setDoc(
+      doc(
+        db,
+        "MailDatabase",
+        year,
+        month,
+        day,
+        "Emails",
+        currentUser.email + counter.toString()
+      ),
+      {
+        Email: currentUser.email,
+        Message: message,
+        Title: title,
+        Date: today,
+      }
+    );
+
+    updateCounter(counter);
   }
 
   async function fetchCounter() {
@@ -55,7 +115,7 @@ export default function Home() {
       // setCounterValue(data.MailCounter)
       // console.log(data.MailCounter)
       // console.log(counter)
-      saveData(data.MailCounter)
+      saveData(data.MailCounter);
     } else {
       console.log("No such document!");
     }
@@ -67,7 +127,6 @@ export default function Home() {
     await updateDoc(counterRef, {
       MailCounter: counter + 1,
     });
- 
   }
   function handleSubmit(e) {
     e.preventDefault();
@@ -76,22 +135,20 @@ export default function Home() {
     setError("");
 
     promises.push(fetchCounter());
-   // promises.push(saveData());
-   // promises.push(updateCounter());
+    // promises.push(saveData());
+    // promises.push(updateCounter());
 
     Promise.all(promises)
-      .then(() => {
-        navigate("/home");
-      })
+      .then(() => {})
       .catch(() => {
         setError("Failed to update account");
       })
       .finally(() => {
         setLoading(false);
-        setTitleValue("")
-        setMessageValue("")
-        setDateValue("")
-        setTimeValue("")
+        setTitleValue("");
+        setMessageValue("");
+        setDateValue("");
+        setTimeValue("");
         alert("Mail saved!");
       });
   }
@@ -111,55 +168,59 @@ export default function Home() {
           We remember the past, live in the present, write the future.
         </h6>
         <form className="form" onSubmit={handleSubmit}>
-        <FloatingLabel
-          controlId="floatingInput"
-          label="Title of the message"
-          className="mt-5"
-        >
-          <Form.Control type="text" ref={titleRef} required onChange={(e) => setTitleValue(e.target.value)}/>
-        </FloatingLabel>
+          <FloatingLabel
+            controlId="floatingInput"
+            label="Title of the message"
+            className="mt-5"
+          >
+            <Form.Control
+              type="text"
+              ref={titleRef}
+              required
+              value={title}
+              onChange={(e) => setTitleValue(e.target.value)}
+            />
+          </FloatingLabel>
 
-        <FloatingLabel
-          controlId="floatingTextarea2"
-          label="Message"
-          className="mt-3"
-        >
-          <Form.Control
-            as="textarea"
-            ref={messageRef}
-            required
-            style={{ height: "180px" }}
-            onChange={(e) => setMessageValue(e.target.value)}
-          />
-        </FloatingLabel>
+          <FloatingLabel
+            controlId="floatingTextarea2"
+            label="Message"
+            className="mt-3"
+          >
+            <Form.Control
+              as="textarea"
+              ref={messageRef}
+              required
+              style={{ height: "200px" }}
+              value={message}
+              onChange={(e) => setMessageValue(e.target.value)}
+            />
+          </FloatingLabel>
 
-        <FloatingLabel
-          controlId="floatingInput"
-          label="Date of receiving mail "
-          className="mt-5"
-        >
-          <Form.Control type="date" ref={dateRef} required 
-          onChange={(e) => setDateValue(e.target.value)}/>
-        </FloatingLabel>
-        <FloatingLabel
-          controlId="floatingInput"
-          label="Time of receiving mail "
-          className="mt-3"
-        >
-          <Form.Control type="time" ref={timeRef} required  onChange={(e) => setTimeValue(e.target.value)}/>
-        </FloatingLabel>
+          <FloatingLabel
+            controlId="floatingInput"
+            label="Date of receiving mail "
+            className="mt-5"
+          >
+            <Form.Control
+              type="date"
+              ref={dateRef}
+              required
+              value={date}
+              min={disablePastDate()}
+              onChange={(e) => setDateValue(e.target.value)}
+            />
+          </FloatingLabel>
 
-        <button
-          style={{ backgroundColor: "#6FB3F8" }}
-          className="btn mt-5 mb-5"
-          size="lg"
-         
-        >
-          Send
-        </button>
+          <button
+            style={{ backgroundColor: "#6FB3F8" }}
+            className="btn mt-5 mb-5"
+            size="lg"
+          >
+            Send
+          </button>
         </form>
       </div>
-    
     </>
   );
 }

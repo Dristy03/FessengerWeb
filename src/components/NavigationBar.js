@@ -37,12 +37,15 @@ export default function NavigationBar() {
             <Nav.Link as={Link} to="/home">
               Home
             </Nav.Link>
-            <Nav.Link as={Link} to="/home/profile">
-              Profile
+            <Nav.Link as={Link} to="/home/history">
+              History
             </Nav.Link>
+            {/* <Nav.Link as={Link} to="/home/profile">
+              Profile
+            </Nav.Link> */}
             <NavDropdown title="Menu" id="basic-nav-dropdown">
               <NavDropdown.Item href="#action/3.1">History</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">
+              <NavDropdown.Item as={Link} to="/home/contact-us">
                 Contact Us
               </NavDropdown.Item>
               <NavDropdown.Item href="#action/3.3">Settings</NavDropdown.Item>
